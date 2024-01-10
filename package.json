@@ -9,6 +9,7 @@
   "name": "example---copy",
   "version": "1.0.0",
   "main": "my-react-app/src/index.js",
+   "type": "module",
   "scripts": {
     "start": "node my-react-app/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
