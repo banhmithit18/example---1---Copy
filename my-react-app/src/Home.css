@@ -1,0 +1,176 @@
+main{
+  padding-bottom: 120px;
+}
+
+.font-link {
+    font-family: 'Poppins', sans-serif;
+}
+
+#pinkBtn{
+    color:#FF9292;
+    background: white;
+    border:solid 2px #FFB4B4;
+    border-radius : 30px;
+    font-size:15px;
+    width: 100px;
+    margin: 10px;
+
+}
+
+#pinkBtn:hover {
+  background-color: #FF9292;
+  color:#FFF;
+}
+
+
+#app{
+    margin-left: 40px;
+}
+
+#app input {
+  padding-left: 20px;
+  padding-bottom:1px;
+  border: none;
+  border-bottom:  solid 2px #FF9292 !important;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+#app input:focus {
+  box-shadow: none;
+}
+
+#addIcon {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+/* folder container */
+.folder-container {
+    margin-bottom: 10px;
+    width: 250px; /* Adjust the width as needed */
+    height: 150px;
+    background:#FFDCDC;
+    border-radius:30px;
+    border: solid 3px white;
+    items-align:center;
+    margin: 10px;
+    
+  }
+
+  .folder-container:hover,.folder-container:active {
+    background-color:#FFB4B4;
+  }
+  
+.folder-list {
+    display: flex;
+    flex-wrap: wrap;
+    item-align:center;
+
+  }
+  
+.button-container {
+    display: flex;
+    gap: 5px;
+  }
+
+#folderButton {
+  border: none;
+  background-color: transparent;
+}
+
+  
+.selected {
+    background:orange;
+  }
+
+#listFolder{
+    list-style-type: none;
+    font-size: 20px;
+    margin: 5px;
+    text-align: center;
+}
+
+#questionModify {
+  background:red;
+}
+
+
+.footerContainer {
+  background: #FF9292;
+  width: 100%;
+  height: 100%;
+  padding: 1px;
+}
+
+.socialIcons {
+  display: flex;
+  justify-content: center;
+}
+
+.socialIcons a {
+  text-decoration: none;
+  padding: 5px;
+  background-color: white;
+  margin: 5px;
+  border-radius: 50%;
+}
+
+.socialIcons a i {
+  font-size: 1.5em;
+  color: black;
+  opacity: 0.9;
+}
+
+.socialIcons a:hover{
+  background-color:#111;
+  transition: 0.5s;
+}
+
+.socialIcons a:hover i {
+  color: white;
+  transition: 0.5s;
+}
+
+.footerNav {
+  margin: 1px 0;
+}
+
+.footerNav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+
+.footerNav ul li a{
+  color: white;
+  margin: 25px;
+  text-decoration: none;
+  font-size: 1em;
+  opacity: 0.7;
+  transition: 0.5s;
+}
+
+.footerNav ul li a:hover{
+  opacity: 1;
+}
+
+.footerBottom {
+  background-color: black;
+  padding: 1px;
+  text-align: center;
+}
+
+.footerBottom p {
+  color: white;
+}  
+
+.designer {
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+  margin: 0px 5px;
+}
