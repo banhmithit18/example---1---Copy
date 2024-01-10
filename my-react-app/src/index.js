@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+const React = require('react');
+const ReactDOM = require('react-dom');
+require('./index.css');
+const App = require('./App');
+const reportWebVitals = require('./reportWebVitals');
+require('bootstrap/dist/css/bootstrap.min.css');
+require('bootstrap/dist/js/bootstrap.bundle.min.js');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
