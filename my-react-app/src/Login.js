@@ -20,24 +20,25 @@ const handleInput = (event)=> {
     setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
   }
 
-const handleSubmit = (event)=> {
-  console.log(event);
-  event.preventDefault();
-  setErrors(Validation(values));
-  if(errors.email === "" && errors.password === "") {
-    axios.post('https://example-l7m4.onrender.com//login', values)
-    .then(res => {
-      console.log(res);
-      if(res.data.status === "Success") {
-        navigate(`user/${res.data.id}/home`);
-      }
-      else {
-        alert("No record existed")
-      }
-    })
-    .catch(err => console.log(err));
-  }
-}
+  const handleSubmit = (event) => {
+    console.log(event);
+    event.preventDefault();
+    setErrors(Validation(values));
+  
+    if (errors.email === "" && errors.password === "") {
+      axios
+        .post('https://example-l7m4.onrender.com//login', values)
+        .then((res) => {
+          console.log(res);
+          if (res.data.status === "Success") {
+            navigate(`user/${res.data.id}/home`);
+          } else {
+            alert("No record existed");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
 
   return (        
     <body class="font-link" style={{background:"#FF9292"}}>
