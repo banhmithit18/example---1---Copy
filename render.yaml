@@ -1,9 +1,15 @@
 version: 1
-buildCommand: npm install
+buildCommand: echo "No build step required"
 services:
   - name: backend
-    buildCommand: npm run build
+    buildCommand: echo "No build step required"
     startCommand: npm start
+    env:
+      - key: PORT
+        value: 3001
   - name: my-react-app
-    buildCommand: npm run build
+    buildCommand: echo "No build step required"
     startCommand: npm start
+    env:
+      - key: PORT
+        value: 3000
