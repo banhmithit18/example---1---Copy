@@ -5,7 +5,7 @@
     "fs": "^0.0.1-security",
     "react-modal": "^3.16.1",
     "uuidv4": "^6.2.13",
-    "react-scripts": "^5.0.0"
+    "react-scripts": "5.0.1",
   },
   "name": "example---copy",
   "version": "1.0.0",
