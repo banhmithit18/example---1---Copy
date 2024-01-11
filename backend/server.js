@@ -31,26 +31,46 @@ const getLoginData = async () => {
   }
 };
 
-app.post('/signup', async (req, res) => {
-  const { name, email, password } = req.body;
-  const loginData = await getLoginData();
-  const newUserData = { id: loginData.length + 1, name, email, password };
-  loginData.push(newUserData);
-  await saveLoginData(loginData);
-  res.json(newUserData);
-});
-
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const loginData = await getLoginData();
-  const user = loginData.find((userData) => userData.email === email && userData.password === password);
-  if (user) {
-    res.json({ status: "Success", id: user.id });
-  } else {
-    res.json("Fail");
+const createLoginFile = async () => {
+  try {
+    await fs.writeFile(loginFilePath, '[]');
+    console.log(`Created login file: ${loginFilePath}`);
+  } catch (error) {
+    console.error('Error creating login file:', error);
   }
-});
+};
 
+// Check if login file exists, if not, create it
+fs.access(loginFilePath)
+  .catch(() => createLoginFile())
+  .then(() => {
+    app.post('/signup', async (req, res) => {
+      const { name, email, password } = req.body;
+      const loginData = await getLoginData();
+      const newUserData = { id: loginData.length + 1, name, email, password };
+      loginData.push(newUserData);
+      await saveLoginData(loginData);
+      res.json(newUserData);
+    });
+
+    app.post('/login', async (req, res) => {
+      const { email, password } = req.body;
+      const loginData = await getLoginData();
+      const user = loginData.find((userData) => userData.email === email && userData.password === password);
+      if (user) {
+        res.json({ status: "Success", id: user.id });
+      } else {
+        res.json("Fail");
+      }
+    });
+
+    const port = 5432 || process.env.PORT;
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  });
+  
 const flashcardsFolder = path.join(__dirname, 'flashcards');
 
 const getFlashcards = async () => {
