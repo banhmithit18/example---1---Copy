@@ -12,9 +12,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node backend/server.js && react-scripts start",
-    "build": "cd my-react-app && npm install && npm run build"
+  "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\""
+      "build": "npm install concurrently"
   },
+  "start-backend": "node backend/server.js",
+  "start-frontend": "cd my-react-app && npm start",
   "keywords": [],
   "author": "",
   "license": "ISC",
