@@ -12,7 +12,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\""
+    "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
       "build": "npm install concurrently"
   },
   "start-backend": "node backend/server.js",
