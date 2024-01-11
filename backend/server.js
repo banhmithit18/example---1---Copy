@@ -11,12 +11,10 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
+const connectionString = "postgres://localhost_g5y1_user:qWmrRah6C7TxRKvraRV28W0LxnRMDEEE@dpg-cmftioeg1b2c73cplbtg-a/localhost_g5y1";
+
 const pool = new Pool({
-  host: "dpg-cmftioeg1b2c73cplbtg-a",
-  port: 5432,
-  user: "localhost_g5y1_user",
-  password: "qWmrRah6C7TxRKvraRV28W0LxnRMDEEE",
-  database: "localhost_g5y1",
+  connectionString,
   ssl: {
     rejectUnauthorized: false
   }
