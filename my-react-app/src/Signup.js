@@ -28,7 +28,7 @@ function Signup() {
       event.preventDefault();
       setErrors(Validation(values));
       if(errors.name === "" && errors.email === "" && errors.password === "") {
-        axios.post('https://example-l7m4.onrender.com/signup', values)
+        axios.post('/signup', values)
         .then(res => {
             navigate('/');
         })

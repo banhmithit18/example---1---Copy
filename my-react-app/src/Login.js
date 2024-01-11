@@ -25,7 +25,7 @@ const handleSubmit = (event)=> {
   event.preventDefault();
   setErrors(Validation(values));
   if(errors.email === "" && errors.password === "") {
-    axios.post('https://example-l7m4.onrender.com/login', values)
+    axios.post('/login', values)
     .then(res => {
       console.log(res);
       if(res.data.status === "Success") {
