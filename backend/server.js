@@ -11,75 +11,43 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-const connectionString = "postgres://localhost_g5y1_user:qWmrRah6C7TxRKvraRV28W0LxnRMDEEE@dpg-cmftioeg1b2c73cplbtg-a/localhost_g5y1";
+const loginFilePath = path.join(__dirname, 'login.txt');
 
-const pool = new Pool({
-  connectionString,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-// Function to create the login table if it doesn't exist
-const createLoginTable = async () => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS login (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255),
-      email VARCHAR(255),
-      password VARCHAR(255)
-    )
-  `;
+const saveLoginData = async (data) => {
   try {
-    const client = await pool.connect();
-    await client.query(createTableQuery);
-    client.release();
-    console.log("Login table created or already exists");
+    await fs.writeFile(loginFilePath, JSON.stringify(data, null, 2));
   } catch (error) {
-    console.error("Error creating login table:", error);
+    console.error('Error saving login data:', error);
   }
 };
 
-// Create the login table on server startup
-createLoginTable();
+const getLoginData = async () => {
+  try {
+    const content = await fs.readFile(loginFilePath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading login data:', error);
+    return [];
+  }
+};
 
 app.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
-  const insertQuery = `
-    INSERT INTO login (name, email, password) 
-    VALUES ($1, $2, $3)
-    RETURNING *
-  `;
-  const values = [name, email, password];
-  try {
-    const client = await pool.connect();
-    const result = await client.query(insertQuery, values);
-    client.release();
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error inserting data:", error);
-    res.json("Error");
-  }
+  const loginData = await getLoginData();
+  const newUserData = { id: loginData.length + 1, name, email, password };
+  loginData.push(newUserData);
+  await saveLoginData(loginData);
+  res.json(newUserData);
 });
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const selectQuery = `
-    SELECT * FROM login WHERE email = $1 AND password = $2
-  `;
-  const values = [email, password];
-  try {
-    const client = await pool.connect();
-    const result = await client.query(selectQuery, values);
-    client.release();
-    if (result.rowCount > 0) {
-      return res.json({ status: "Success", id: result.rows[0].id });
-    } else {
-      return res.json("Fail");
-    }
-  } catch (error) {
-    console.error("Error querying data:", error);
-    res.json("Error");
+  const loginData = await getLoginData();
+  const user = loginData.find((userData) => userData.email === email && userData.password === password);
+  if (user) {
+    res.json({ status: "Success", id: user.id });
+  } else {
+    res.json("Fail");
   }
 });
 
