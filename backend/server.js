@@ -1,59 +1,85 @@
 const express = require("express");
-const mysql = require('mysql');
+const { Pool } = require("pg");
 const cors = require('cors');
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "signup"
-})
-
-app.post('/signup', (req, res) => {
-    const sql = "INSERT INTO login (`name`, `email`, `password`) VALUE (?)";
-    const values = [
-        req.body.name,
-        req.body.email,
-        req.body.password
-    ]
-    db.query(sql, [values], (err, data) => {
-        if(err) {
-            return res.json("Error");
-        }
-        return res.json(data);
-    })
-})
-
-app.post('/login', (req, res) => {
-    const sql = "SELECT * FROM login WHERE `email` = ? AND `password` = ?";
-    console.log(req.body);
-    db.query(sql, [req.body.email,req.body.password], (err, data) => {
-        if(err) {
-            return res.json("Error");
-        }
-        if(data.length > 0) {
-            return res.json({ status: "Success", id: data[0].id })
-        }
-        else {
-            return res.json("Fail")
-        }
-    })
-})
-
-// server.js
 const bodyParser = require('body-parser');
 const fs = require('fs/promises');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-
-const port = 8081 || process.env.PORT;
-
+const app = express();
+app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
+
+const pool = new Pool({
+  host: "dpg-cmftioeg1b2c73cplbtg-a",
+  user: "localhost_g5y1_user",
+  password: "qWmrRah6C7TxRKvraRV28W0LxnRMDEEE",
+  database: "localhost_g5y1",
+});
+
+// Function to create the login table if it doesn't exist
+const createLoginTable = async () => {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS login (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255),
+      email VARCHAR(255),
+      password VARCHAR(255)
+    )
+  `;
+  try {
+    const client = await pool.connect();
+    await client.query(createTableQuery);
+    client.release();
+    console.log("Login table created or already exists");
+  } catch (error) {
+    console.error("Error creating login table:", error);
+  }
+};
+
+// Create the login table on server startup
+createLoginTable();
+
+app.post('/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+  const insertQuery = `
+    INSERT INTO login (name, email, password) 
+    VALUES ($1, $2, $3)
+    RETURNING *
+  `;
+  const values = [name, email, password];
+  try {
+    const client = await pool.connect();
+    const result = await client.query(insertQuery, values);
+    client.release();
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.json("Error");
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const selectQuery = `
+    SELECT * FROM login WHERE email = $1 AND password = $2
+  `;
+  const values = [email, password];
+  try {
+    const client = await pool.connect();
+    const result = await client.query(selectQuery, values);
+    client.release();
+    if (result.rowCount > 0) {
+      return res.json({ status: "Success", id: result.rows[0].id });
+    } else {
+      return res.json("Fail");
+    }
+  } catch (error) {
+    console.error("Error querying data:", error);
+    res.json("Error");
+  }
+});
 
 const flashcardsFolder = path.join(__dirname, 'flashcards');
 
@@ -114,10 +140,12 @@ app.post('/api/flashcards', async (req, res) => {
 });
 
 app.delete('/api/flashcards/:id', async (req, res) => {
-  const fileName = `flashcard_${req.params.id}.json`;
+  const fileName= `flashcard_${req.params.id}.json`;
   await deleteFlashcard(fileName);
   res.json({ success: true });
 });
+
+const port = 8081 || process.env.PORT;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
