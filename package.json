@@ -17,8 +17,6 @@
     "start-backend": "node backend/server.js",
     "start-frontend": "cd my-react-app && npm start"
   },
-  "start-backend": "node backend/server.js",
-  "start-frontend": "cd my-react-app && npm start",
   "keywords": [],
   "author": "",
   "license": "ISC",
