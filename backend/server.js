@@ -1,5 +1,4 @@
 const express = require("express");
-const { Pool } = require("pg");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs/promises');
@@ -135,7 +134,7 @@ app.delete('/api/flashcards/:id', async (req, res) => {
   res.json({ success: true });
 });
 
-const port = 5432 || process.env.PORT;
+const port = 5433 || process.env.PORT;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
