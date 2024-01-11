@@ -10,8 +10,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "react-scripts build"
+    "start": "node server/server.js",
+    "build": "cd app && npm run build"
   },
   "keywords": [],
   "author": "",
