@@ -2,12 +2,80 @@ import React, {useState} from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 import Validation from './LoginValidation'
-import axios from 'axios'
 import './Login.css';
 import image1 from './img/image1.jpg';
 import image2 from './img/image2.jpg';
 import image3 from './img/image3.jpg';
 
+const express = require("express");
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const fs = require('fs/promises');
+const path = require('path');
+const loginFilePath = path.join(__dirname, 'login.txt');
+
+const saveLoginData = async (data) => {
+  try {
+    await fs.writeFile(loginFilePath, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('Error saving login data:', error);
+  }
+};
+
+const getLoginData = async () => {
+  try {
+    const content = await fs.readFile(loginFilePath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading login data:', error);
+    return [];
+  }
+};
+
+const createLoginFile = async () => {
+  try {
+    await fs.writeFile(loginFilePath, '[]');
+    console.log(`Created login file: ${loginFilePath}`);
+  } catch (error) {
+    console.error('Error creating login file:', error);
+  }
+};
+
+// Check if login file exists, if not, create it
+fs.access(loginFilePath)
+  .catch(() => createLoginFile())
+  .then(() => {
+    app.post('/signup', async (req, res) => {
+      const { name, email, password } = req.body;
+      const loginData = await getLoginData();
+      const newUserData = { id: loginData.length + 1, name, email, password };
+      loginData.push(newUserData);
+      await saveLoginData(loginData);
+      res.json(newUserData);
+    });
+
+    app.post('/login', async (req, res) => {
+      const { email, password } = req.body;
+      const loginData = await getLoginData();
+      const user = loginData.find((userData) => userData.email === email && userData.password === password);
+      if (user) {
+        res.json({ status: "Success", id: user.id });
+      } else {
+        res.json("Fail");
+      }
+    });
+
+    const port = 5432 || process.env.PORT;
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  });
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.json());
 
 function Login() {
   const[values, setValues] = useState({
@@ -20,24 +88,20 @@ const handleInput = (event)=> {
     setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
   }
 
-const handleSubmit = (event)=> {
-  console.log(event);
-  event.preventDefault();
-  setErrors(Validation(values));
-  if(errors.email === "" && errors.password === "") {
-    axios.post('/login', values)
-    .then(res => {
-      console.log(res);
-      if(res.data.status === "Success") {
-        navigate(`user/${res.data.id}/home`);
+  const handleSubmit = (event) => {
+    console.log(event);
+    event.preventDefault();
+    setErrors(Validation(values));
+    if (errors.email === "" && errors.password === "") {
+      const loginData = getLoginData();
+      const user = loginData.find((userData) => userData.email === values.email && userData.password === values.password);
+      if (user) {
+        navigate(`user/${user.id}/home`);
+      } else {
+        alert("No record existed");
       }
-      else {
-        alert("No record existed")
-      }
-    })
-    .catch(err => console.log(err));
-  }
-}
+    }
+  };
 
   return (        
     <body class="font-link" style={{background:"#FF9292"}}>
