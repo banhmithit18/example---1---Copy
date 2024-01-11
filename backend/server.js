@@ -13,10 +13,13 @@ app.use(bodyParser.json());
 
 const pool = new Pool({
   host: "dpg-cmftioeg1b2c73cplbtg-a",
+  port: 5432,
   user: "localhost_g5y1_user",
   password: "qWmrRah6C7TxRKvraRV28W0LxnRMDEEE",
   database: "localhost_g5y1",
-  port: 5432
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Function to create the login table if it doesn't exist
