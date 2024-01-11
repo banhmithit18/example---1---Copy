@@ -16,6 +16,7 @@ const pool = new Pool({
   user: "localhost_g5y1_user",
   password: "qWmrRah6C7TxRKvraRV28W0LxnRMDEEE",
   database: "localhost_g5y1",
+  port: 5432
 });
 
 // Function to create the login table if it doesn't exist
@@ -145,7 +146,7 @@ app.delete('/api/flashcards/:id', async (req, res) => {
   res.json({ success: true });
 });
 
-const port = 8081 || process.env.PORT;
+const port = 5432 || process.env.PORT;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
